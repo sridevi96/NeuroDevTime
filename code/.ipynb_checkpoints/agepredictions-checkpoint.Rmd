@@ -1,0 +1,31 @@
+---
+title: "Agepredictor_neurodev"
+output: html_document
+date: "2025-01-26"
+---
+
+```{r}
+library(caret)
+library(Seurat)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+load("code/celltypeinvariantmodels_19082024.Rdata")
+load("code/common_genes_allfetalorganoid.Rdata")
+fetaldata=readRDS("data/Wang2024_humanfetal.rds")
+
+```
+
+
+```{r}
+#convert ENSG to gene symbol
+library(biomaRt)
+library(org.Hs.eg.db)
+mart <- useEnsembl("ensembl","hsapiens_gene_ensembl")
+symb <- keys(org.Hs.eg.db, "SYMBOL")
+z <- getBM(c("ensembl_gene_id","hgnc_symbol"), "hgnc_symbol", symb, mart)#get all human gene symbols and names mapped
+mapped_genes<-z[z$ensembl_gene_id %in% Features(fetaldata),]
+```
+
